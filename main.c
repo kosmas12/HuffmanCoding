@@ -24,11 +24,11 @@
 
 void getSymbols(const char *string, char *output) {
     char curSymbol = '\0';
-    uint16_t numFoundSymbols = 0;
-    uint16_t numIterations = strlen(string);
-    for (uint16_t i = 0; i < numIterations; ++i) {
+    unsigned long numFoundSymbols = 0;
+    unsigned long numIterations = strlen(string);
+    for (unsigned long i = 0; i < numIterations; ++i) {
         curSymbol = string[i];
-        for (uint16_t j = 0; j < numIterations; ++j) {
+        for (unsigned long j = 0; j < numIterations; ++j) {
             if(curSymbol == output[j]) {
                 break;
             }
@@ -39,16 +39,38 @@ void getSymbols(const char *string, char *output) {
     }
 }
 
+void getSymbolsFrequency(const char *string, char *symbols, uint32_t *output) {
+    for (unsigned long i = 0; i < strlen(symbols); ++i) {
+        for (unsigned long j = 0; j < strlen(string); ++j) {
+            if (symbols[i] == string[j]) {
+                ++output[i];
+            }
+        }
+    }
+}
+
 int main() {
     //struct node *testNode = newNode(0);
 
     const char *string = "Hello World!";
+    // Allocate enough memory for worst case scenario: Every character is unique
     char *symbols = (char *) calloc(1, strlen(string));
     getSymbols(string, symbols);
 
     printf("%s\n", symbols);
 
+    // Allocate enough memory for worst case scenario here too
+    uint32_t *frequencies = (uint32_t *) calloc(4, strlen(string));
+
+    getSymbolsFrequency(string, symbols, frequencies);
+
+    printf("String \"%s\" has these symbols:\n", string);
+    for (unsigned long i = 0; i < strlen(symbols); ++i) {
+        printf("%c appearing %d times\n", symbols[i], frequencies[i]);
+    }
+
     free(symbols);
+    free(frequencies);
 
     return 0;
 }
