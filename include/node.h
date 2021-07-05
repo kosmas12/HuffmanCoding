@@ -26,7 +26,7 @@ struct node {
 };
 
 struct node *newNode(int data);
-struct node *insertNode(struct node *node, int data)
-int lookupData(struct node *node, int targetData)
+struct node *insertNode(struct node *node, int data);
+int lookupData(struct node *node, int targetData);
 
 #endif //HUFFMANCODING_NODE_H

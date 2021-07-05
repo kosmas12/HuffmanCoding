@@ -19,27 +19,27 @@
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
+#include <stdint.h>
 #include "include/node.h"
 
 void getSymbols(const char *string, char *output) {
     char curSymbol = '\0';
-    int numFoundSymbols = 0;
-    int numIterations = strlen(string);
-    for (int i = 0; i < numIterations; ++i) {
+    uint16_t numFoundSymbols = 0;
+    uint16_t numIterations = strlen(string);
+    for (uint16_t i = 0; i < numIterations; ++i) {
         curSymbol = string[i];
-        for (int j = 0; j < numIterations; ++j) {
-               if(curSymbol == output[j]) {
-                   break;
-               }
-               else if (curSymbol != output[j] && j == numIterations - 1) {
-                   output[numFoundSymbols++] = curSymbol;
-               }
+        for (uint16_t j = 0; j < numIterations; ++j) {
+            if(curSymbol == output[j]) {
+                break;
+            }
+            else if (curSymbol != output[j] && j == numIterations - 1) {
+                output[numFoundSymbols++] = curSymbol;
+            }
         }
     }
 }
 
 int main() {
-
     //struct node *testNode = newNode(0);
 
     const char *string = "Hello World!";
