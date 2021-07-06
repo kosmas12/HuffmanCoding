@@ -3,4 +3,4 @@ project(HuffmanCoding C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_executable(HuffmanCoding main.c include/node.c)
+add_executable(HuffmanCoding main.c include/node.c include/symbol.c)

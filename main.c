@@ -21,56 +21,32 @@
 #include <malloc.h>
 #include <stdint.h>
 #include "include/node.h"
-
-void getSymbols(const char *string, char *output) {
-    char curSymbol = '\0';
-    unsigned long numFoundSymbols = 0;
-    unsigned long numIterations = strlen(string);
-    for (unsigned long i = 0; i < numIterations; ++i) {
-        curSymbol = string[i];
-        for (unsigned long j = 0; j < numIterations; ++j) {
-            if(curSymbol == output[j]) {
-                break;
-            }
-            else if (curSymbol != output[j] && j == numIterations - 1) {
-                output[numFoundSymbols++] = curSymbol;
-            }
-        }
-    }
-}
-
-void getSymbolsFrequency(const char *string, char *symbols, uint32_t *output) {
-    for (unsigned long i = 0; i < strlen(symbols); ++i) {
-        for (unsigned long j = 0; j < strlen(string); ++j) {
-            if (symbols[i] == string[j]) {
-                ++output[i];
-            }
-        }
-    }
-}
+#include "include/symbol.h"
 
 int main() {
     //struct node *testNode = newNode(0);
 
     const char *string = "Hello World!";
     // Allocate enough memory for worst case scenario: Every character is unique
-    char *symbols = (char *) calloc(1, strlen(string));
+    symbol *symbols = (symbol *) calloc(sizeof(symbol), strlen(string));
     getSymbols(string, symbols);
 
-    printf("%s\n", symbols);
+    printf("String \"%s\" with each character appearing once is \"", string);
+    for (unsigned long i = 0; i < strlen(string); ++i) {
+        printf("%c", symbols[i].character);
+    }
+    printf("\"\n");
 
-    // Allocate enough memory for worst case scenario here too
-    uint32_t *frequencies = (uint32_t *) calloc(4, strlen(string));
+    getSymbolsFrequency(string, symbols, symbols);
 
-    getSymbolsFrequency(string, symbols, frequencies);
+    unsigned long numIterations = getSymbolsLen(symbols);
 
     printf("String \"%s\" has these symbols:\n", string);
-    for (unsigned long i = 0; i < strlen(symbols); ++i) {
-        printf("%c appearing %d times\n", symbols[i], frequencies[i]);
+
+    for (unsigned long i = 0; i < numIterations; ++i) {
+        printf("%c appearing %d times\n", symbols[i].character, symbols[i].frequency);
     }
 
     free(symbols);
-    free(frequencies);
-
     return 0;
 }
