@@ -43,3 +43,25 @@ unsigned long getSymbolsLen(const symbol *symbols) {
     };
     return symbolslen;
 }
+
+void swapSymbols(symbol *operand1, symbol *operand2) {
+    symbol temp = *operand1;
+    *operand1 = *operand2;
+    *operand2 = temp;
+}
+
+void sortSymbolArray(symbol *array, unsigned long arrayLength) {
+    unsigned long minimumFrequencyIndex;
+
+    for (unsigned long i = 0; i < arrayLength - 1; i++) {
+        // Find symbol with minimum frequency
+        minimumFrequencyIndex = i;
+        for (unsigned long j = i + 1; j < arrayLength; j++) {
+            if (array[j].frequency < array[minimumFrequencyIndex].frequency) {
+                minimumFrequencyIndex = j;
+            }
+        }
+
+        swapSymbols(&array[minimumFrequencyIndex], &array[i]);
+    }
+}

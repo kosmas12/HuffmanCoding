@@ -39,13 +39,15 @@ int main() {
 
     getSymbolsFrequency(string, symbols, symbols);
 
-    unsigned long numIterations = getSymbolsLen(symbols);
+    unsigned long symbolsArrayLength = getSymbolsLen(symbols);
 
     printf("String \"%s\" has these symbols:\n", string);
 
-    for (unsigned long i = 0; i < numIterations; ++i) {
+    for (unsigned long i = 0; i < symbolsArrayLength; ++i) {
         printf("%c appearing %d times\n", symbols[i].character, symbols[i].frequency);
     }
+
+    sortSymbolArray(symbols, symbolsArrayLength);
 
     free(symbols);
     return 0;
