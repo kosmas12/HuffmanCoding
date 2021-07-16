@@ -19,36 +19,74 @@
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
-#include <stdint.h>
 #include "include/node.h"
 #include "include/symbol.h"
 
-int main() {
-    //struct node *testNode = newNode(0);
+void removeElementsFromNodeArray(struct node **array, int numElements, unsigned long arrayLength) {
+    int removedElements = 0;
+    for (int i = 0; i < arrayLength; ++i) {
+        if(array[i]->data.character != (char) 0 && removedElements < numElements) {
+            for (int j = i; j < arrayLength - 1; ++j) {
+                *array[j] = *array[j + 1];
+            }
+            ++removedElements;
+        }
+    }
 
+    for(int i = 0; i < removedElements; ++i) {
+        // This segfaults
+        //free(array[arrayLength - 1 - i]);
+    }
+}
+
+int main() {
     const char *string = "Hello World!";
     // Allocate enough memory for worst case scenario: Every character is unique
     symbol *symbols = (symbol *) calloc(sizeof(symbol), strlen(string));
-    getSymbols(string, symbols);
 
-    printf("String \"%s\" with each character appearing once is \"", string);
-    for (unsigned long i = 0; i < strlen(string); ++i) {
-        printf("%c", symbols[i].character);
+    if(!symbols) {
+        printf("Out of memory when allocating symbols\n");
+        return 1;
     }
-    printf("\"\n");
+
+    getSymbols(string, symbols);
 
     getSymbolsFrequency(string, symbols, symbols);
 
-    unsigned long symbolsArrayLength = getSymbolsLen(symbols);
+    // At first holds full array length
+    unsigned long remainingSymbolsArrayLength = getSymbolsLen(symbols);
 
-    printf("String \"%s\" has these symbols:\n", string);
+    sortSymbolArray(symbols, remainingSymbolsArrayLength);
 
-    for (unsigned long i = 0; i < symbolsArrayLength; ++i) {
-        printf("%c appearing %d times\n", symbols[i].character, symbols[i].frequency);
+    struct node **leafNodes = calloc(remainingSymbolsArrayLength, sizeof(struct node *));
+
+    if (!leafNodes) {
+        printf("Out of memory when allocating leaf nodes\n");
+        free(symbols);
+        return 1;
     }
 
-    sortSymbolArray(symbols, symbolsArrayLength);
-
+    for (int i = 0; i < remainingSymbolsArrayLength; ++i) {
+        leafNodes[i] = newLeafNode(symbols[i]);
+        if(!leafNodes[i]) {
+            printf("Out of memory when creating leaf nodes\n");
+            free(leafNodes);
+            free(symbols);
+            return 1;
+        }
+    }
     free(symbols);
+
+    for (unsigned long i = 0; i < remainingSymbolsArrayLength; ++i) {
+        if (i % 2 == 0 && i > 0) {
+            struct node *newNode = combineNode(leafNodes[i - 2], leafNodes[i - 1]);
+            removeElementsFromNodeArray(leafNodes, 2, getNodeArrayLength(leafNodes));
+            remainingSymbolsArrayLength -= 2;
+            leafNodes = addNodeToArray(newNode, leafNodes, getNodeArrayLength(leafNodes));
+        }
+    }
+
+
+    free(leafNodes);
     return 0;
 }

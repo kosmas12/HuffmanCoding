@@ -19,14 +19,21 @@
 #ifndef HUFFMANCODING_NODE_H
 #define HUFFMANCODING_NODE_H
 
+#include "symbol.h"
+
 struct node {
-    int data;
+    symbol data;
     struct node *left;
     struct node *right;
 };
 
-struct node *newNode(int data);
-struct node *insertNode(struct node *node, int data);
-int lookupData(struct node *node, int targetData);
+struct node *newLeafNode(symbol data);
+struct node *newInternalNode(int data);
+struct node *combineNode(struct node *leftNode, struct node *rightNode);
+int lookupData(struct node *node, symbol targetData);
+unsigned long getNodeArrayLength(struct node **array);
+struct node **addNodeToArray(struct node *node, struct node **array, unsigned long arrayLength);
+void swapNodes(struct node *operand1, struct node *operand2);
+struct node **sortNodeArray(struct node **array, unsigned long arrayLength);
 
 #endif //HUFFMANCODING_NODE_H

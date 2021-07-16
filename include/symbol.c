@@ -1,9 +1,22 @@
-//
-// Created by kosmas on 6/7/21.
-//
+/*
+    This file is part of HuffmanCoding - A C implementation of the Huffman coding algorithm
+    Copyright (C) 2021 Kosmas Raptis
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
 
 #include <string.h>
-#include <stdint.h>
 #include "symbol.h"
 
 void getSymbols(const char *string, symbol *output) {
@@ -24,7 +37,7 @@ void getSymbols(const char *string, symbol *output) {
 }
 
 void getSymbolsFrequency(const char *string, symbol *symbols, symbol *output) {
-    int symbolslen = getSymbolsLen(symbols);
+    unsigned long symbolslen = getSymbolsLen(symbols);
 
     for (unsigned long i = 0; i < symbolslen; ++i) {
         for (unsigned long j = 0; j < strlen(string); ++j) {
