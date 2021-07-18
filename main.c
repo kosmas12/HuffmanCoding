@@ -18,31 +18,15 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include "include/node.h"
 #include "include/symbol.h"
 
-void removeElementsFromNodeArray(struct node **array, int numElements, unsigned long arrayLength) {
-    int removedElements = 0;
-    for (int i = 0; i < arrayLength; ++i) {
-        if(array[i]->data.character != (char) 0 && removedElements < numElements) {
-            for (int j = i; j < arrayLength - 1; ++j) {
-                *array[j] = *array[j + 1];
-            }
-            ++removedElements;
-        }
-    }
-
-    for(int i = 0; i < removedElements; ++i) {
-        // This segfaults
-        //free(array[arrayLength - 1 - i]);
-    }
-}
-
 int main() {
-    const char *string = "Hello World!";
+    const char *string = "Hello Konstantina!";
+
     // Allocate enough memory for worst case scenario: Every character is unique
-    symbol *symbols = (symbol *) calloc(sizeof(symbol), strlen(string));
+    symbol *symbols = (symbol *) calloc(strlen(string), sizeof(symbol));
 
     if(!symbols) {
         printf("Out of memory when allocating symbols\n");
@@ -52,13 +36,12 @@ int main() {
     getSymbols(string, symbols);
 
     getSymbolsFrequency(string, symbols, symbols);
-
     // At first holds full array length
     unsigned long remainingSymbolsArrayLength = getSymbolsLen(symbols);
 
     sortSymbolArray(symbols, remainingSymbolsArrayLength);
 
-    struct node **leafNodes = calloc(remainingSymbolsArrayLength, sizeof(struct node *));
+    struct node **leafNodes = calloc(remainingSymbolsArrayLength+1, sizeof(struct node *));
 
     if (!leafNodes) {
         printf("Out of memory when allocating leaf nodes\n");
@@ -77,13 +60,14 @@ int main() {
     }
     free(symbols);
 
-    for (unsigned long i = 0; i < remainingSymbolsArrayLength; ++i) {
-        if (i % 2 == 0 && i > 0) {
-            struct node *newNode = combineNode(leafNodes[i - 2], leafNodes[i - 1]);
-            removeElementsFromNodeArray(leafNodes, 2, getNodeArrayLength(leafNodes));
-            remainingSymbolsArrayLength -= 2;
-            leafNodes = addNodeToArray(newNode, leafNodes, getNodeArrayLength(leafNodes));
-        }
+    for (; getNodeArrayLength(leafNodes) >= 2;) {
+        sortNodeArray(leafNodes, getNodeArrayLength(leafNodes));
+        struct node *leftNode = leafNodes[0];
+        struct node *rightNode = leafNodes[1];
+        removeFirstElementFromNodeArray(leafNodes, getNodeArrayLength(leafNodes));
+        removeFirstElementFromNodeArray(leafNodes, getNodeArrayLength(leafNodes));
+        struct node *combinedNode = combineNode(leftNode, rightNode);
+        appendNodeToArray(combinedNode, leafNodes);
     }
 
 

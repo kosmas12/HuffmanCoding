@@ -32,7 +32,8 @@ struct node *newInternalNode(int data);
 struct node *combineNode(struct node *leftNode, struct node *rightNode);
 int lookupData(struct node *node, symbol targetData);
 unsigned long getNodeArrayLength(struct node **array);
-struct node **addNodeToArray(struct node *node, struct node **array, unsigned long arrayLength);
+void removeFirstElementFromNodeArray(struct node **array, unsigned long arrayLength);
+void appendNodeToArray(struct node *node, struct node **array);
 void swapNodes(struct node *operand1, struct node *operand2);
 struct node **sortNodeArray(struct node **array, unsigned long arrayLength);
 

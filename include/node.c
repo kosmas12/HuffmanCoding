@@ -71,11 +71,20 @@ unsigned long getNodeArrayLength(struct node **array) {
     return length;
 }
 
-struct node **addNodeToArray(struct node *node, struct node **array, unsigned long arrayLength) {
-    array = realloc(array, sizeof(struct node *) * (arrayLength + 1) * 8);
-    array[arrayLength] = node;
-    return sortNodeArray(array, getNodeArrayLength(array));
+void removeFirstElementFromNodeArray(struct node **array, unsigned long arrayLength) {
+    for (int i = 0; i < arrayLength-1; i++) {
+        array[i] = array[i+1];
+    }
+    array[arrayLength-1] = NULL;
 }
+
+void appendNodeToArray(struct node *node, struct node **array) {
+    int i = 0;
+    while(array[i] != 0) i++;
+    array[i] = node;
+    array[i+1] = 0;
+}
+
 
 void swapNodes(struct node *operand1, struct node *operand2) {
     struct node *temp = operand1;
