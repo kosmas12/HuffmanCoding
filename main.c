@@ -21,9 +21,10 @@
 #include <stdlib.h>
 #include "include/node.h"
 #include "include/symbol.h"
+#include "include/encoding.h"
 
 int main() {
-    const char *string = "Hello Konstantina!";
+    const char *string = "Hello World!";
 
     // Allocate enough memory for worst case scenario: Every character is unique
     symbol *symbols = (symbol *) calloc(strlen(string), sizeof(symbol));
@@ -58,7 +59,6 @@ int main() {
             return 1;
         }
     }
-    free(symbols);
 
     for (; getNodeArrayLength(leafNodes) >= 2;) {
         sortNodeArray(leafNodes, getNodeArrayLength(leafNodes));
@@ -70,6 +70,8 @@ int main() {
         appendNodeToArray(combinedNode, leafNodes);
     }
 
+    // TODO: Make it print all characters
+    generateAndPrintEncoding(leafNodes[0], &leafNodes[0]->data.encoding, (int) getSymbolsLen(symbols));
 
     free(leafNodes);
     return 0;

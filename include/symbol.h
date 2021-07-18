@@ -22,6 +22,7 @@
 typedef struct {
     char character;
     int frequency;
+    int encoding;
 }symbol;
 
 void getSymbols(const char *string, symbol *output);

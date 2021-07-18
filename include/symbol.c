@@ -30,7 +30,7 @@ void getSymbols(const char *string, symbol *output) {
                 break;
             }
             else if (curSymbol != output[j].character && j == numIterations - 1) {
-                output[numFoundSymbols++].character = curSymbol;
+                output[numFoundSymbols].character = curSymbol;
             }
         }
     }
