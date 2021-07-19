@@ -85,13 +85,6 @@ void appendNodeToArray(struct node *node, struct node **array) {
     array[i+1] = 0;
 }
 
-
-void swapNodes(struct node *operand1, struct node *operand2) {
-    struct node *temp = operand1;
-    operand1 = operand2;
-    operand2 = temp;
-}
-
 struct node **sortNodeArray(struct node **array, unsigned long arrayLength) {
     unsigned long i, j;
 
