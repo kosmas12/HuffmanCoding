@@ -60,7 +60,7 @@ int main() {
         }
     }
 
-    for (; getNodeArrayLength(leafNodes) >= 2;) {
+    while(getNodeArrayLength(leafNodes) >= 2) {
         sortNodeArray(leafNodes, getNodeArrayLength(leafNodes));
         struct node *leftNode = leafNodes[0];
         struct node *rightNode = leafNodes[1];
@@ -70,8 +70,7 @@ int main() {
         appendNodeToArray(combinedNode, leafNodes);
     }
 
-    // TODO: Make it print all characters
-    generateAndPrintEncoding(leafNodes[0], &leafNodes[0]->data.encoding, (int) getSymbolsLen(symbols));
+    generateAndPrintEncoding(leafNodes[0], &leafNodes[0]->data.encoding, 0);
 
     free(leafNodes);
     return 0;
