@@ -17,6 +17,7 @@
 */
 
 #include <string.h>
+#include <stdlib.h>
 #include "symbol.h"
 
 void getSymbols(const char *string, symbol *output) {

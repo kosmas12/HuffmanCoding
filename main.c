@@ -24,7 +24,7 @@
 #include "include/encoding.h"
 
 int main() {
-    const char *string = "       aaaaeeeefffhhiimmnnssttloprux";
+    const char *string = "Hello!";
 
     // Allocate enough memory for worst case scenario: Every character is unique
     symbol *symbols = (symbol *) calloc(strlen(string), sizeof(symbol));
@@ -60,6 +60,10 @@ int main() {
         }
     }
 
+    symbol stopNodeData = {(char) 1, 0};
+    struct node *stopNode = newLeafNode(stopNodeData);
+    appendNodeToArray(stopNode, leafNodes);
+
     while(getNodeArrayLength(leafNodes) >= 2) {
         sortNodeArray(leafNodes, getNodeArrayLength(leafNodes));
         struct node *leftNode = leafNodes[0];
@@ -70,7 +74,11 @@ int main() {
         appendNodeToArray(combinedNode, leafNodes);
     }
 
-    generateAndPrintEncoding(leafNodes[0], &leafNodes[0]->data.encoding, 0);
+    generateAndPrintEncoding(leafNodes[0], symbols, leafNodes[0]->data.encoding, 0);
+
+    int *encodedString = generateEncodedString(string, symbols);
+
+
 
     free(leafNodes);
     return 0;
