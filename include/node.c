@@ -93,18 +93,17 @@ void swapNodes(struct node *operand1, struct node *operand2) {
 }
 
 struct node **sortNodeArray(struct node **array, unsigned long arrayLength) {
-    unsigned long minimumFrequencyIndex;
+    unsigned long i, j;
 
-    for (unsigned long i = 0; i < arrayLength - 1; i++) {
-        // Find symbol with minimum frequency
-        minimumFrequencyIndex = i;
-        for (unsigned long j = 0; j < arrayLength; j++) {
-            if (array[j]->data.frequency < array[minimumFrequencyIndex]->data.frequency) {
-                minimumFrequencyIndex = j;
+    for(i = 0; i < arrayLength; i++) {
+        for(j = i + 1; j < arrayLength; j++) {
+            if(array[j]->data.frequency < array[i]->data.frequency) {
+                struct node *temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
             }
         }
-
-        swapNodes(array[minimumFrequencyIndex], array[i]);
     }
+
     return array;
 }

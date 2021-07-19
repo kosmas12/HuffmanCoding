@@ -24,7 +24,7 @@
 #include "include/encoding.h"
 
 int main() {
-    const char *string = "Hello World!";
+    const char *string = "       aaaaeeeefffhhiimmnnssttloprux";
 
     // Allocate enough memory for worst case scenario: Every character is unique
     symbol *symbols = (symbol *) calloc(strlen(string), sizeof(symbol));
