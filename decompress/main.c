@@ -16,13 +16,25 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef HUFFMANCODING_ENCODING_H
-#define HUFFMANCODING_ENCODING_H
+#include <stdio.h>
+#include <stdlib.h>
+#include "../include/symbol.h"
+#include "../include/utility.h"
 
-#include "node.h"
+int main(int argc, char *argv[]) {
+    if (argc <= 1) {
+        printf("No compressedFile provided. Exiting...\n");
+        return 1;
+    }
 
-void printEncoding(int *encoding, int encodingLength);
-void generateAndPrintEncoding(struct node *root, symbol symbols[], int encoding[], int start);
-int *generateEncodedString(const char *string, const symbol symbols[], int *numBitsWrittenOutput);
+    FILE *compressedFile = fopen(argv[1], "rb");
+    if (!compressedFile) {
+        printf("Couldn't open input file.\n");
+        return 1;
+    }
+    symbol *dictionary = getDictionaryFromFile(compressedFile);
 
-#endif //HUFFMANCODING_ENCODING_H
+    fclose(compressedFile);
+    free(dictionary);
+    return 0;
+}

@@ -62,8 +62,8 @@ int lookupData(struct node *node, symbol targetData) {
     }
 }
 
-unsigned long getNodeArrayLength(struct node **array) {
-    unsigned long length = 0;
+uint32_t getNodeArrayLength(struct node **array) {
+    uint32_t length = 0;
 
     while (array[length]) {
         ++length;
@@ -71,7 +71,7 @@ unsigned long getNodeArrayLength(struct node **array) {
     return length;
 }
 
-void removeFirstElementFromNodeArray(struct node **array, unsigned long arrayLength) {
+void removeFirstElementFromNodeArray(struct node **array, uint32_t arrayLength) {
     for (int i = 0; i < arrayLength-1; i++) {
         array[i] = array[i+1];
     }
@@ -85,7 +85,7 @@ void appendNodeToArray(struct node *node, struct node **array) {
     array[i+1] = 0;
 }
 
-struct node **sortNodeArray(struct node **array, unsigned long arrayLength) {
+struct node **sortNodeArray(struct node **array, uint32_t arrayLength) {
     unsigned long i, j;
 
     for(i = 0; i < arrayLength; i++) {

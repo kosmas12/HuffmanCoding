@@ -20,6 +20,7 @@
 #define HUFFMANCODING_NODE_H
 
 #include "symbol.h"
+#include <stdint.h>
 
 struct node {
     symbol data;
@@ -31,9 +32,9 @@ struct node *newLeafNode(symbol data);
 struct node *newInternalNode(int data);
 struct node *combineNode(struct node *leftNode, struct node *rightNode);
 int lookupData(struct node *node, symbol targetData);
-unsigned long getNodeArrayLength(struct node **array);
-void removeFirstElementFromNodeArray(struct node **array, unsigned long arrayLength);
+uint32_t getNodeArrayLength(struct node **array);
+void removeFirstElementFromNodeArray(struct node **array, uint32_t arrayLength);
 void appendNodeToArray(struct node *node, struct node **array);
-struct node **sortNodeArray(struct node **array, unsigned long arrayLength);
+struct node **sortNodeArray(struct node **array, uint32_t arrayLength);
 
 #endif //HUFFMANCODING_NODE_H

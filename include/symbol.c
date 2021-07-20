@@ -22,11 +22,11 @@
 
 void getSymbols(const char *string, symbol *output) {
     char curSymbol = '\0';
-    unsigned long numFoundSymbols = 0;
-    unsigned long numIterations = strlen(string);
-    for (unsigned long i = 0; i < numIterations; ++i) {
+    uint32_t numFoundSymbols = 0;
+    uint32_t numIterations = strlen(string);
+    for (uint32_t i = 0; i < numIterations; ++i) {
         curSymbol = string[i];
-        for (unsigned long j = 0; j < numIterations; ++j) {
+        for (uint32_t j = 0; j < numIterations; ++j) {
             if(curSymbol == output[j].character) {
                 break;
             }
@@ -38,10 +38,10 @@ void getSymbols(const char *string, symbol *output) {
 }
 
 void getSymbolsFrequency(const char *string, symbol *symbols, symbol *output) {
-    unsigned long symbolslen = getSymbolsLen(symbols);
+    uint32_t symbolslen = getSymbolsLen(symbols);
 
-    for (unsigned long i = 0; i < symbolslen; ++i) {
-        for (unsigned long j = 0; j < strlen(string); ++j) {
+    for (uint32_t i = 0; i < symbolslen; ++i) {
+        for (uint32_t j = 0; j < strlen(string); ++j) {
             if (symbols[i].character == string[j]) {
                 ++output[i].frequency;
             }
@@ -49,8 +49,8 @@ void getSymbolsFrequency(const char *string, symbol *symbols, symbol *output) {
     }
 }
 
-unsigned long getSymbolsLen(const symbol *symbols) {
-    unsigned long symbolslen = 0;
+uint32_t getSymbolsLen(const symbol *symbols) {
+    uint32_t symbolslen = 0;
 
     while (symbols[symbolslen].character) {
         ++symbolslen;
@@ -64,13 +64,13 @@ void swapSymbols(symbol *operand1, symbol *operand2) {
     *operand2 = temp;
 }
 
-void sortSymbolArray(symbol *array, unsigned long arrayLength) {
-    unsigned long minimumFrequencyIndex;
+void sortSymbolArray(symbol *array, uint32_t arrayLength) {
+    uint32_t minimumFrequencyIndex;
 
-    for (unsigned long i = 0; i < arrayLength - 1; i++) {
+    for (uint32_t i = 0; i < arrayLength - 1; i++) {
         // Find symbol with minimum frequency
         minimumFrequencyIndex = i;
-        for (unsigned long j = i + 1; j < arrayLength; j++) {
+        for (uint32_t j = i + 1; j < arrayLength; j++) {
             if (array[j].frequency < array[minimumFrequencyIndex].frequency) {
                 minimumFrequencyIndex = j;
             }

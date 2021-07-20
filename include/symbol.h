@@ -19,18 +19,20 @@
 #ifndef HUFFMANCODING_SYMBOL_H
 #define HUFFMANCODING_SYMBOL_H
 
+#include <stdint.h>
+
 typedef struct {
     char character;
     int frequency;
-    int encoding[100];
+    int encoding[10];
     int encodingLength;
 }symbol;
 
 void getSymbols(const char *string, symbol *output);
 void getSymbolsFrequency(const char *string, symbol *symbols, symbol *output);
-unsigned long getSymbolsLen(const symbol *symbols);
+uint32_t getSymbolsLen(const symbol *symbols);
 void swapSymbols(symbol *operand1, symbol *operand2);
 // This sorts in ascending frequency order following a selection sort approach
-void sortSymbolArray(symbol *array, unsigned long arrayLength);
+void sortSymbolArray(symbol *array, uint32_t arrayLength);
 
 #endif //HUFFMANCODING_SYMBOL_H

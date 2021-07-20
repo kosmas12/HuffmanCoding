@@ -60,7 +60,7 @@ void generateAndPrintEncoding(struct node *root, symbol symbols[], int encoding[
     }
 }
 
-int *generateEncodedString(const char *string, const symbol symbols[]) {
+int *generateEncodedString(const char *string, const symbol symbols[], int *numBitsWrittenOutput) {
     int *encodedString = (int *) calloc(strlen(string) * 4, sizeof(int));
 
     int numBitsWritten = 0;
@@ -83,6 +83,7 @@ int *generateEncodedString(const char *string, const symbol symbols[]) {
     }
     printf("\n");
 
+    *numBitsWrittenOutput = numBitsWritten;
     return encodedString;
 
 }

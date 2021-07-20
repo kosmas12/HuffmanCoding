@@ -16,13 +16,17 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef HUFFMANCODING_ENCODING_H
-#define HUFFMANCODING_ENCODING_H
+#ifndef HUFFMANCODING_UTILITY_H
+#define HUFFMANCODING_UTILITY_H
 
-#include "node.h"
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include "symbol.h"
 
-void printEncoding(int *encoding, int encodingLength);
-void generateAndPrintEncoding(struct node *root, symbol symbols[], int encoding[], int start);
-int *generateEncodedString(const char *string, const symbol symbols[], int *numBitsWrittenOutput);
+void writeDictionaryToFile(const symbol dictionary[], FILE *file);
+void writeEncodedStringToFile(const int encodedString[], FILE *file, int length);
+void setBit(unsigned char *value, uint8_t bitToSet, int set);
+symbol *getDictionaryFromFile(FILE *file);
 
-#endif //HUFFMANCODING_ENCODING_H
+#endif //HUFFMANCODING_UTILITY_H

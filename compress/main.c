@@ -19,12 +19,31 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "include/node.h"
-#include "include/symbol.h"
-#include "include/encoding.h"
+#include "../include/node.h"
+#include "../include/symbol.h"
+#include "../include/encoding.h"
+#include "../include/utility.h"
 
-int main() {
-    const char *string = "Hello!";
+int main(int argc, char *argv[]) {
+    if (argc <= 1) {
+        printf("No file provided. Exiting...\n");
+        return 1;
+    }
+
+    char *string;
+    FILE *file = fopen(argv[1], "r");
+
+    if (file) {
+        fseek(file, 0, SEEK_END);
+        long length = ftell(file);
+        fseek(file, 0, SEEK_SET);
+        string = (char *) malloc(length);
+        if (string) {
+            fread(string, 1, length, file);
+        }
+        fclose(file);
+        string[length] = (char) 1;
+    }
 
     // Allocate enough memory for worst case scenario: Every character is unique
     symbol *symbols = (symbol *) calloc(strlen(string), sizeof(symbol));
@@ -38,7 +57,7 @@ int main() {
 
     getSymbolsFrequency(string, symbols, symbols);
     // At first holds full array length
-    unsigned long remainingSymbolsArrayLength = getSymbolsLen(symbols);
+    uint32_t remainingSymbolsArrayLength = getSymbolsLen(symbols);
 
     sortSymbolArray(symbols, remainingSymbolsArrayLength);
 
@@ -60,10 +79,6 @@ int main() {
         }
     }
 
-    symbol stopNodeData = {(char) 1, 0};
-    struct node *stopNode = newLeafNode(stopNodeData);
-    appendNodeToArray(stopNode, leafNodes);
-
     while(getNodeArrayLength(leafNodes) >= 2) {
         sortNodeArray(leafNodes, getNodeArrayLength(leafNodes));
         struct node *leftNode = leafNodes[0];
@@ -76,10 +91,18 @@ int main() {
 
     generateAndPrintEncoding(leafNodes[0], symbols, leafNodes[0]->data.encoding, 0);
 
-    int *encodedString = generateEncodedString(string, symbols);
+    int length = 0;
+    int *encodedString = generateEncodedString(string, symbols, &length);
 
+    char *outputFileName = malloc(strlen(argv[1]) + 6); // File name, extension and NULL
+    sprintf(outputFileName, "%s.huff", argv[1]);
+    FILE *outputFile = fopen(outputFileName, "wb+");
 
+    writeDictionaryToFile(symbols, file);
+    writeEncodedStringToFile(encodedString, outputFile, length);
+    fclose(outputFile);
 
+    free(symbols);
     free(leafNodes);
     return 0;
 }
