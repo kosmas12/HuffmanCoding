@@ -100,8 +100,12 @@ int main(int argc, char *argv[]) {
 
     writeDictionaryToFile(symbols, file);
     writeEncodedStringToFile(encodedString, outputFile, length);
-    fclose(outputFile);
 
+
+    fclose(outputFile);
+    free(string);
+    free(encodedString);
+    free(outputFileName);
     free(symbols);
     free(leafNodes);
     return 0;
