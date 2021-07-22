@@ -24,7 +24,7 @@
 typedef struct {
     char character;
     int frequency;
-    int encoding[10];
+    uint8_t encoding[10];
     int encodingLength;
 }symbol;
 

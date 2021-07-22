@@ -21,8 +21,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include "node.h"
+#include "utility.h"
 
-void printEncoding(int encoding[], int encodingLength) {
+void printEncoding(uint8_t encoding[], int encodingLength) {
     int i;
     for (i = 0; i < encodingLength; ++i) {
         printf("%d", encoding[i]);
@@ -31,7 +32,7 @@ void printEncoding(int encoding[], int encodingLength) {
     printf("\n");
 }
 
-void generateAndPrintEncoding(struct node *root, symbol symbols[], int encoding[], int start) {
+void generateAndPrintEncoding(struct node *root, symbol symbols[], uint8_t encoding[], int start) {
     if (root->left) {
         encoding[start] = 0;
         generateAndPrintEncoding(root->left, symbols, encoding, start + 1);
@@ -85,6 +86,45 @@ int *generateEncodedString(const char *string, const symbol symbols[], int *numB
 
     *numBitsWrittenOutput = numBitsWritten;
     return encodedString;
+
+}
+
+char translateEncoding(const uint8_t encoding[], const symbol dictionary[]) {
+    int encodingLength = 1;
+
+    for (int i = 0; i < getSymbolsLen(dictionary); ++i) {
+        if (dictionary[i].encoding == encoding) {
+            return dictionary[i].character;
+        }
+    }
+    return (char) 0;
+}
+
+char *decodeString(const uint8_t encodedString[], const size_t encodedStringSize, const symbol dictionary[]) {
+    // sizeof(char) can be replaced with 1 in most systems but not all
+    char *decodedString = calloc(encodedStringSize, sizeof(char));
+
+    int decodedBits = 0;
+
+    uint8_t *encodedStringBits = calloc(encodedStringSize, sizeof(uint8_t) * 8);
+
+    int encodedBits = 0;
+    for (int i = 0; i < encodedStringSize; i++) {
+        for (int j = 0; j < 8; ++j) {
+            encodedStringBits[encodedBits++] = getBit(encodedString[i], j);
+        }
+    }
+
+    for (int i = 0; i < encodedStringSize; ++i) {
+        for (int j = 0; j < 10; ++j) {
+            if (decodedString[i] != (char) 0) {
+                decodedBits += j;
+                break;
+            }
+        }
+    }
+
+    return decodedString;
 
 }
 

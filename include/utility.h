@@ -26,7 +26,11 @@
 
 void writeDictionaryToFile(const symbol dictionary[], FILE *file);
 void writeEncodedStringToFile(const int encodedString[], FILE *file, int length);
-void setBit(unsigned char *value, uint8_t bitToSet, int set);
+uint8_t getBit(uint8_t value, uint8_t bitToGet);
+void setBit(uint8_t *value, uint8_t bitToSet, int set);
 symbol *getDictionaryFromFile(FILE *file);
+uint8_t *getEncodedStringFromFile(FILE *file, uint32_t offsetFromStart, size_t *encodedStringSizeOutput);
+char translateEncoding(const uint8_t encoding[], const symbol dictionary[]);
+char *decodeString(const uint8_t *encodedString, const size_t encodedStringSize, const symbol dictionary[]);
 
 #endif //HUFFMANCODING_UTILITY_H

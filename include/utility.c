@@ -18,13 +18,17 @@
 
 #include "utility.h"
 
-void setBit(unsigned char *value, uint8_t bitToSet, int set) {
+void setBit(uint8_t *value, uint8_t bitToSet, int set) {
     if (set) {
         *value |= 1UL << bitToSet;
     }
     else {
         *value &= ~(1UL << bitToSet);
     }
+}
+
+uint8_t getBit(uint8_t value, uint8_t bitToGet) {
+    return (uint8_t) (value & ( 1 << bitToGet )) >> bitToGet;
 }
 
 void writeDictionaryToFile(const symbol dictionary[], FILE *file) {
@@ -40,7 +44,7 @@ void writeEncodedStringToFile(const int encodedString[], FILE *file, int length)
     static int bytesWritten = 1;
 
     while (length > 0) {
-        unsigned char byteToWrite = 0;
+        uint8_t byteToWrite = 0;
         for (int i = 0; i < 8; ++i) {
             if (length > 0) {
                 setBit(&byteToWrite, i, encodedString[i * bytesWritten] == 1);
@@ -51,18 +55,34 @@ void writeEncodedStringToFile(const int encodedString[], FILE *file, int length)
                 break;
             }
         }
-        fwrite(&byteToWrite, sizeof(unsigned char), 1, file);
+        // sizeof(uint8_t) can be replaced with 1 in most systems but some implementations might not adhere to standard
+        fwrite(&byteToWrite, sizeof(uint8_t), 1, file);
         ++bytesWritten;
         byteToWrite = 0;
     }
 }
 
 symbol *getDictionaryFromFile(FILE *file) {
-    uint32_t dictionarySize;
+    uint32_t dictionarySize = 0;
     fread(&dictionarySize, sizeof(uint32_t), 1, file);
 
     symbol *dictionary = (symbol *) malloc(dictionarySize);
     fread(dictionary, dictionarySize, 1, file);
 
     return dictionary;
+}
+
+uint8_t *getEncodedStringFromFile(FILE *file, uint32_t offsetFromStart, size_t *encodedStringSizeOutput) {
+    fseek(file, 0, SEEK_END);
+    const size_t encodedStringSize = ftell(file) - offsetFromStart;
+    fseek(file, 0, SEEK_SET);
+    // sizeof(uint8_t) can be replaced with 1 in most systems but some implementations might not adhere to standard
+    uint8_t *encodedString = (uint8_t *) calloc(encodedStringSize, sizeof(uint8_t));
+
+    int i = 0;
+    while (!feof(file)) {
+        fread(&encodedString[i++], sizeof(uint8_t), 1, file);
+    }
+    *encodedStringSizeOutput = encodedStringSize;
+    return encodedString;
 }

@@ -20,9 +20,12 @@
 #define HUFFMANCODING_ENCODING_H
 
 #include "node.h"
+#include <stddef.h>
 
-void printEncoding(int *encoding, int encodingLength);
-void generateAndPrintEncoding(struct node *root, symbol symbols[], int encoding[], int start);
+void printEncoding(uint8_t *encoding, int encodingLength);
+void generateAndPrintEncoding(struct node *root, symbol symbols[], uint8_t encoding[], int start);
 int *generateEncodedString(const char *string, const symbol symbols[], int *numBitsWrittenOutput);
+char translateEncoding(const uint8_t encoding[], const symbol dictionary[]);
+char *decodeString(const uint8_t encodedString[], const size_t encodedStringSize, const symbol dictionary[]);
 
 #endif //HUFFMANCODING_ENCODING_H

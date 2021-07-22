@@ -23,7 +23,7 @@
 
 int main(int argc, char *argv[]) {
     if (argc <= 1) {
-        printf("No compressedFile provided. Exiting...\n");
+        printf("No compressed file provided. Exiting...\n");
         return 1;
     }
 
@@ -34,7 +34,19 @@ int main(int argc, char *argv[]) {
     }
     symbol *dictionary = getDictionaryFromFile(compressedFile);
 
+    uint32_t offset = (getSymbolsLen(dictionary) * sizeof(symbol));
+    // Temporary workaround for bug
+    offset -= sizeof(symbol);
+    size_t encodedStringSize = 0;
+    uint8_t *encodedString = getEncodedStringFromFile(compressedFile, offset, &encodedStringSize);
+
+    char *plainText = decodeString(encodedString, encodedStringSize, dictionary);
+
+    printf("%s\n", plainText);
+
+    free(plainText);
     fclose(compressedFile);
+    free(encodedString);
     free(dictionary);
     return 0;
 }
