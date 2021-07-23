@@ -92,15 +92,14 @@ int main(int argc, char *argv[]) {
     generateAndPrintEncoding(leafNodes[0], symbols, leafNodes[0]->data.encoding, 0);
 
     int length = 0;
-    int *encodedString = generateEncodedString(string, symbols, &length);
+    uint8_t *encodedString = generateEncodedString(string, symbols, &length);
 
-    char *outputFileName = malloc(strlen(argv[1]) + 6); // File name, extension and NULL
+    char *outputFileName = (char *) malloc(strlen(argv[1]) + 6); // File name, extension and NULL
     sprintf(outputFileName, "%s.huff", argv[1]);
     FILE *outputFile = fopen(outputFileName, "wb+");
 
-    writeDictionaryToFile(symbols, file);
+    writeDictionaryToFile(symbols, outputFile);
     writeEncodedStringToFile(encodedString, outputFile, length);
-
 
     fclose(outputFile);
     free(string);

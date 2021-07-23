@@ -34,9 +34,7 @@ int main(int argc, char *argv[]) {
     }
     symbol *dictionary = getDictionaryFromFile(compressedFile);
 
-    uint32_t offset = (getSymbolsLen(dictionary) * sizeof(symbol));
-    // Temporary workaround for bug
-    offset -= sizeof(symbol);
+    uint32_t offset = (getSymbolsLen(dictionary) * sizeof(symbol) + sizeof(uint32_t));
     size_t encodedStringSize = 0;
     uint8_t *encodedString = getEncodedStringFromFile(compressedFile, offset, &encodedStringSize);
 

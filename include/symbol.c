@@ -50,12 +50,12 @@ void getSymbolsFrequency(const char *string, symbol *symbols, symbol *output) {
 }
 
 uint32_t getSymbolsLen(const symbol *symbols) {
-    uint32_t symbolslen = 0;
+    uint32_t symbolsLength = 0;
 
-    while (symbols[symbolslen].character) {
-        ++symbolslen;
-    };
-    return symbolslen;
+    while (symbols[symbolsLength].character) {
+        ++symbolsLength;
+    }
+    return symbolsLength;
 }
 
 void swapSymbols(symbol *operand1, symbol *operand2) {

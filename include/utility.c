@@ -28,7 +28,7 @@ void setBit(uint8_t *value, uint8_t bitToSet, int set) {
 }
 
 uint8_t getBit(uint8_t value, uint8_t bitToGet) {
-    return (uint8_t) (value & ( 1 << bitToGet )) >> bitToGet;
+    return (uint8_t) (value >> bitToGet) & 1;
 }
 
 void writeDictionaryToFile(const symbol dictionary[], FILE *file) {
@@ -40,8 +40,8 @@ void writeDictionaryToFile(const symbol dictionary[], FILE *file) {
     fwrite(dictionary, dictionarySize, 1, file);
 }
 
-void writeEncodedStringToFile(const int encodedString[], FILE *file, int length) {
-    static int bytesWritten = 1;
+void writeEncodedStringToFile(const uint8_t encodedString[], FILE *file, int length) {
+    int bytesWritten = 1;
 
     while (length > 0) {
         uint8_t byteToWrite = 0;
@@ -58,7 +58,6 @@ void writeEncodedStringToFile(const int encodedString[], FILE *file, int length)
         // sizeof(uint8_t) can be replaced with 1 in most systems but some implementations might not adhere to standard
         fwrite(&byteToWrite, sizeof(uint8_t), 1, file);
         ++bytesWritten;
-        byteToWrite = 0;
     }
 }
 
@@ -79,10 +78,7 @@ uint8_t *getEncodedStringFromFile(FILE *file, uint32_t offsetFromStart, size_t *
     // sizeof(uint8_t) can be replaced with 1 in most systems but some implementations might not adhere to standard
     uint8_t *encodedString = (uint8_t *) calloc(encodedStringSize, sizeof(uint8_t));
 
-    int i = 0;
-    while (!feof(file)) {
-        fread(&encodedString[i++], sizeof(uint8_t), 1, file);
-    }
+    fread(encodedString, encodedStringSize, 1, file);
     *encodedStringSizeOutput = encodedStringSize;
     return encodedString;
 }

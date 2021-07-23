@@ -23,9 +23,9 @@
 
 typedef struct {
     char character;
-    int frequency;
+    uint8_t frequency;
     uint8_t encoding[10];
-    int encodingLength;
+    uint8_t encodingLength;
 }symbol;
 
 void getSymbols(const char *string, symbol *output);

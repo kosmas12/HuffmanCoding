@@ -61,12 +61,13 @@ void generateAndPrintEncoding(struct node *root, symbol symbols[], uint8_t encod
     }
 }
 
-int *generateEncodedString(const char *string, const symbol symbols[], int *numBitsWrittenOutput) {
-    int *encodedString = (int *) calloc(strlen(string) * 4, sizeof(int));
+uint8_t *generateEncodedString(const char *string, const symbol symbols[], int *numBitsWrittenOutput) {
+    size_t stringLength = strlen(string);
+    uint8_t *encodedString = (uint8_t *) calloc(stringLength, sizeof(uint8_t));
 
     int numBitsWritten = 0;
 
-    for (int i = 0; i < strlen(string); ++i) {
+    for (int i = 0; i < stringLength; ++i) {
         for (int j = 0; j < getSymbolsLen(symbols); ++j) {
             if (string[i] == symbols[j].character) {
                 int k = 0;
@@ -89,11 +90,20 @@ int *generateEncodedString(const char *string, const symbol symbols[], int *numB
 
 }
 
-char translateEncoding(const uint8_t encoding[], const symbol dictionary[]) {
-    int encodingLength = 1;
+char translateEncoding(const uint8_t encoding[], const symbol dictionary[], const uint8_t length) {
 
     for (int i = 0; i < getSymbolsLen(dictionary); ++i) {
-        if (dictionary[i].encoding == encoding) {
+        int match = 0;
+        for (int j = 0; j < length; ++j) {
+            if (encoding[j] == dictionary[i].encoding[j]) {
+                match = 1;
+            }
+            else {
+                match = 0;
+                break;
+            }
+        }
+        if (match && dictionary[i].encodingLength == length) {
             return dictionary[i].character;
         }
     }
@@ -102,11 +112,11 @@ char translateEncoding(const uint8_t encoding[], const symbol dictionary[]) {
 
 char *decodeString(const uint8_t encodedString[], const size_t encodedStringSize, const symbol dictionary[]) {
     // sizeof(char) can be replaced with 1 in most systems but not all
-    char *decodedString = calloc(encodedStringSize, sizeof(char));
+    char *decodedString = (char *) calloc(encodedStringSize + 1, sizeof(char));
 
     int decodedBits = 0;
 
-    uint8_t *encodedStringBits = calloc(encodedStringSize, sizeof(uint8_t) * 8);
+    uint8_t *encodedStringBits = (uint8_t *) calloc(encodedStringSize, sizeof(uint8_t) * 8);
 
     int encodedBits = 0;
     for (int i = 0; i < encodedStringSize; i++) {
@@ -115,16 +125,22 @@ char *decodeString(const uint8_t encodedString[], const size_t encodedStringSize
         }
     }
 
-    for (int i = 0; i < encodedStringSize; ++i) {
-        for (int j = 0; j < 10; ++j) {
-            if (decodedString[i] != (char) 0) {
-                decodedBits += j;
-                break;
+    int numDecodedCharacters = 0;
+    while (decodedString[numDecodedCharacters - 1] != (char) 1) {
+        for (int i = 0; i < getSymbolsLen(dictionary); ++i) {
+            uint8_t *curEncoding = (uint8_t *) calloc(dictionary[i].encodingLength, sizeof(uint8_t));
+            for (int j = 0; j < dictionary[i].encodingLength; ++j) {
+                curEncoding[j] = encodedStringBits[j + decodedBits];
             }
+            decodedString[numDecodedCharacters] = translateEncoding(curEncoding, dictionary, dictionary[i].encodingLength);
+            if (decodedString[numDecodedCharacters] != (char) 0) {
+                ++numDecodedCharacters;
+                decodedBits += dictionary[i].encodingLength;
+            }
+            free(curEncoding);
         }
     }
 
     return decodedString;
-
 }
 
