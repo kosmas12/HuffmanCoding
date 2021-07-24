@@ -62,12 +62,11 @@ void generateAndPrintEncoding(struct node *root, symbol symbols[], uint8_t encod
 }
 
 uint8_t *generateEncodedString(const char *string, const symbol symbols[], int *numBitsWrittenOutput) {
-    size_t stringLength = strlen(string);
-    uint8_t *encodedString = (uint8_t *) calloc(stringLength, sizeof(uint8_t));
+    uint8_t *encodedString = (uint8_t *) calloc(strlen(string) * 4, sizeof(int));
 
     int numBitsWritten = 0;
 
-    for (int i = 0; i < stringLength; ++i) {
+    for (int i = 0; i < strlen(string); ++i) {
         for (int j = 0; j < getSymbolsLen(symbols); ++j) {
             if (string[i] == symbols[j].character) {
                 int k = 0;
@@ -91,7 +90,6 @@ uint8_t *generateEncodedString(const char *string, const symbol symbols[], int *
 }
 
 char translateEncoding(const uint8_t encoding[], const symbol dictionary[], const uint8_t length) {
-
     for (int i = 0; i < getSymbolsLen(dictionary); ++i) {
         int match = 0;
         for (int j = 0; j < length; ++j) {
@@ -112,11 +110,11 @@ char translateEncoding(const uint8_t encoding[], const symbol dictionary[], cons
 
 char *decodeString(const uint8_t encodedString[], const size_t encodedStringSize, const symbol dictionary[]) {
     // sizeof(char) can be replaced with 1 in most systems but not all
-    char *decodedString = (char *) calloc(encodedStringSize + 1, sizeof(char));
+    char *decodedString = calloc(encodedStringSize, sizeof(char));
 
     int decodedBits = 0;
 
-    uint8_t *encodedStringBits = (uint8_t *) calloc(encodedStringSize, sizeof(uint8_t) * 8);
+    uint8_t *encodedStringBits = calloc(encodedStringSize, sizeof(uint8_t) * 8);
 
     int encodedBits = 0;
     for (int i = 0; i < encodedStringSize; i++) {
@@ -137,10 +135,17 @@ char *decodeString(const uint8_t encodedString[], const size_t encodedStringSize
                 ++numDecodedCharacters;
                 decodedBits += dictionary[i].encodingLength;
             }
+            if(decodedString[numDecodedCharacters - 1] == (char) 1) {
+                decodedString[numDecodedCharacters] = 0;
+                break;
+            }
             free(curEncoding);
         }
     }
 
+    decodedString[numDecodedCharacters - 1] = 0;
+
     return decodedString;
+
 }
 

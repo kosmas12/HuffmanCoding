@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../include/symbol.h"
 #include "../include/utility.h"
 
@@ -34,16 +35,33 @@ int main(int argc, char *argv[]) {
     }
     symbol *dictionary = getDictionaryFromFile(compressedFile);
 
-    uint32_t offset = (getSymbolsLen(dictionary) * sizeof(symbol) + sizeof(uint32_t));
+    int offset = (getSymbolsLen(dictionary) * sizeof(symbol)) + sizeof(uint32_t);
     size_t encodedStringSize = 0;
     uint8_t *encodedString = getEncodedStringFromFile(compressedFile, offset, &encodedStringSize);
+    fclose(compressedFile);
 
     char *plainText = decodeString(encodedString, encodedStringSize, dictionary);
 
-    printf("%s\n", plainText);
+    char *outputFileName = calloc(strlen(argv[1]), sizeof(char));
 
+    for (int i = 0; i < strlen(argv[1]) - 5; ++i) {
+        outputFileName[i] = argv[1][i];
+    }
+
+    FILE *outputFile = fopen(outputFileName, "w+");
+    if (!outputFileName) {
+        printf("Couldn't create/open output file!\n");
+        free(outputFileName);
+        free(plainText);
+        free(encodedString);
+        free(dictionary);
+        return 1;
+    }
+    fwrite(plainText, sizeof(char), strlen(plainText), outputFile);
+
+    free(outputFileName);
     free(plainText);
-    fclose(compressedFile);
+    fclose(outputFile);
     free(encodedString);
     free(dictionary);
     return 0;

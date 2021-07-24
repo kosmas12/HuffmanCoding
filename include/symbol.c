@@ -75,7 +75,6 @@ void sortSymbolArray(symbol *array, uint32_t arrayLength) {
                 minimumFrequencyIndex = j;
             }
         }
-
         swapSymbols(&array[minimumFrequencyIndex], &array[i]);
     }
 }

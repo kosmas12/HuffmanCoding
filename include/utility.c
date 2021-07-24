@@ -41,13 +41,13 @@ void writeDictionaryToFile(const symbol dictionary[], FILE *file) {
 }
 
 void writeEncodedStringToFile(const uint8_t encodedString[], FILE *file, int length) {
-    int bytesWritten = 1;
+    int bitsWritten = 0;
 
     while (length > 0) {
         uint8_t byteToWrite = 0;
         for (int i = 0; i < 8; ++i) {
             if (length > 0) {
-                setBit(&byteToWrite, i, encodedString[i * bytesWritten] == 1);
+                setBit(&byteToWrite, i, encodedString[bitsWritten++] == 1);
                 --length;
             }
             else {
@@ -57,7 +57,6 @@ void writeEncodedStringToFile(const uint8_t encodedString[], FILE *file, int len
         }
         // sizeof(uint8_t) can be replaced with 1 in most systems but some implementations might not adhere to standard
         fwrite(&byteToWrite, sizeof(uint8_t), 1, file);
-        ++bytesWritten;
     }
 }
 
@@ -71,10 +70,10 @@ symbol *getDictionaryFromFile(FILE *file) {
     return dictionary;
 }
 
-uint8_t *getEncodedStringFromFile(FILE *file, uint32_t offsetFromStart, size_t *encodedStringSizeOutput) {
+uint8_t *getEncodedStringFromFile(FILE *file, int offsetFromStart, size_t *encodedStringSizeOutput) {
     fseek(file, 0, SEEK_END);
     const size_t encodedStringSize = ftell(file) - offsetFromStart;
-    fseek(file, 0, SEEK_SET);
+    fseek(file, offsetFromStart, SEEK_SET);
     // sizeof(uint8_t) can be replaced with 1 in most systems but some implementations might not adhere to standard
     uint8_t *encodedString = (uint8_t *) calloc(encodedStringSize, sizeof(uint8_t));
 
