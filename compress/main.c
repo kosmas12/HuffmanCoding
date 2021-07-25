@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
     }
 
     // Allocate enough memory for worst case scenario: Every character is unique
-    symbol *symbols = (symbol *) calloc(strlen(string), sizeof(symbol));
+    symbol *symbols = (symbol *) calloc(256, sizeof(symbol));
 
     if(!symbols) {
         printf("Out of memory when allocating symbols\n");
