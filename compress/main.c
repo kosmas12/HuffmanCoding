@@ -26,23 +26,29 @@
 
 int main(int argc, char *argv[]) {
     if (argc <= 1) {
-        printf("No file provided. Exiting...\n");
+        printf("No textFile provided. Exiting...\n");
         return 1;
     }
 
-    char *string;
-    FILE *file = fopen(argv[1], "r");
+    char *readString;
+    FILE *textFile = fopen(argv[1], "r");
 
-    if (file) {
-        fseek(file, 0, SEEK_END);
-        long length = ftell(file);
-        fseek(file, 0, SEEK_SET);
-        string = (char *) malloc(length);
-        if (string) {
-            fread(string, 1, length, file);
+    if (textFile) {
+        fseek(textFile, 0, SEEK_END);
+        long textFileSize = ftell(textFile);
+        fseek(textFile, 0, SEEK_SET);
+        readString = (char *) malloc(textFileSize + 2); // Make room for the EOF marker
+        if (readString) {
+            fread(readString, 1, textFileSize, textFile);
+        } else {
+            printf("OOM");
+            return -1;
         }
-        fclose(file);
-        string[length] = (char) 1;
+        fclose(textFile);
+
+        // as the first element in an aray is element-zero. So the last is textFileSize-1.
+        readString[textFileSize] = (char) 1; // This is the EOF marker
+        readString[textFileSize + 1] = 0;
     }
 
     // Allocate enough memory for worst case scenario: Every character is unique
@@ -53,9 +59,9 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    getSymbols(string, symbols);
+    getSymbols(readString, symbols);
 
-    getSymbolsFrequency(string, symbols, symbols);
+    getSymbolsFrequency(readString, symbols, symbols);
     // At first holds full array length
     uint32_t remainingSymbolsArrayLength = getSymbolsLen(symbols);
 
@@ -92,7 +98,7 @@ int main(int argc, char *argv[]) {
     generateAndPrintEncoding(leafNodes[0], symbols, leafNodes[0]->data.encoding, 0);
 
     int length = 0;
-    uint8_t *encodedString = generateEncodedString(string, symbols, &length);
+    uint8_t *encodedString = generateEncodedString(readString, symbols, &length);
 
     char *outputFileName = (char *) malloc(strlen(argv[1]) + 6); // File name, extension and NULL
     sprintf(outputFileName, "%s.huff", argv[1]);
@@ -102,7 +108,7 @@ int main(int argc, char *argv[]) {
     writeEncodedStringToFile(encodedString, outputFile, length);
 
     fclose(outputFile);
-    free(string);
+    free(readString);
     free(encodedString);
     free(outputFileName);
     free(symbols);

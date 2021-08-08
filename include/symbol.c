@@ -20,19 +20,26 @@
 #include <stdlib.h>
 #include "symbol.h"
 
+int isCharInSymbols(char c, symbol *symbols){
+    int len_sym = getSymbolsLen(symbols);
+    for(int i = 0; i < len_sym; i++){
+        if(c == symbols[i].character)
+            return 1;
+    }
+    return 0;
+}
+
 void getSymbols(const char *string, symbol *output) {
     char curSymbol = '\0';
     uint32_t numFoundSymbols = 0;
     uint32_t numIterations = strlen(string);
     for (uint32_t i = 0; i < numIterations; ++i) {
         curSymbol = string[i];
-        for (uint32_t j = 0; j < numIterations; ++j) {
-            if(curSymbol == output[j].character) {
-                break;
-            }
-            else if (curSymbol != output[j].character && j == numIterations - 1) {
-                output[numFoundSymbols++].character = curSymbol;
-            }
+        if(isCharInSymbols(curSymbol, output)){
+            continue;
+        } else {
+            output[numFoundSymbols].character = curSymbol;
+            numFoundSymbols++;
         }
     }
 }

@@ -78,12 +78,6 @@ uint8_t *generateEncodedString(const char *string, const symbol symbols[], int *
         }
     }
 
-    int i = 0;
-    while (i < numBitsWritten) {
-        printf("%d", encodedString[i++]);
-    }
-    printf("\n");
-
     *numBitsWrittenOutput = numBitsWritten;
     return encodedString;
 
