@@ -42,14 +42,14 @@ int main(int argc, char *argv[]) {
 
     char *plainText = decodeString(encodedString, encodedStringSize, dictionary);
 
-    char *outputFileName = calloc(strlen(argv[1]), sizeof(char));
+    char *outputFileName = calloc(strlen(argv[1]) + 1, sizeof(char));
 
     for (int i = 0; i < strlen(argv[1]) - 5; ++i) {
         outputFileName[i] = argv[1][i];
     }
 
     FILE *outputFile = fopen(outputFileName, "w+");
-    if (!outputFileName) {
+    if (!outputFile) {
         printf("Couldn't create/open output file!\n");
         free(outputFileName);
         free(plainText);
@@ -57,7 +57,7 @@ int main(int argc, char *argv[]) {
         free(dictionary);
         return 1;
     }
-    fwrite(plainText, sizeof(char), strlen(plainText), outputFile);
+    fprintf(outputFile, "%s", plainText);
 
     free(outputFileName);
     free(plainText);

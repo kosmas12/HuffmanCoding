@@ -104,7 +104,7 @@ char translateEncoding(const uint8_t encoding[], const symbol dictionary[], cons
 
 char *decodeString(const uint8_t encodedString[], const size_t encodedStringSize, const symbol dictionary[]) {
     // sizeof(char) can be replaced with 1 in most systems but not all
-    char *decodedString = calloc(encodedStringSize, sizeof(char));
+    char *decodedString = calloc(encodedStringSize * 4, sizeof(char));
 
     int decodedBits = 0;
 
